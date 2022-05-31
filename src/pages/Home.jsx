@@ -8,27 +8,38 @@ import PizzaBlock from '../components/PizzaBlocks/PizzaBlock';
 import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 
 function Home() {
+  const axios = require('axios').default;
+  const limit = 4;
+  const sRequestUrl = 'https://628e3c78368687f3e71316d3.mockapi.io/Pizzas?&';
   const [pizzas, setPizzas] = useState([]);
-  const [pagesCount, setPagesCount] = useState(1);
+  const [pagesCount, setPagesCount] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setLoading] = useState(true);
 
   const { categoryId, sortType, searchValue } = useSelector((state) => state.filter),
     sortTypeName = sortType.type;
 
   useEffect(() => {
+    axios.get(`${sRequestUrl}`).then(function (response) {
+      const dataPizzas = response.data;
+      setPagesCount(Math.ceil(dataPizzas.length / limit));
+    });
+  }, []);
+
+  useEffect(() => {
     setLoading(true);
-    fetch(
-      `https://628e3c78368687f3e71316d3.mockapi.io/Pizzas?${
-        categoryId ? `category=${categoryId}` : ``
-      }&page=${pagesCount}&limit=4&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
-    )
-      .then((res) => res.json())
-      .then((items) => {
-        setPizzas(items);
+    axios
+      .get(
+        `${sRequestUrl}${
+          categoryId ? `category=${categoryId}` : ``
+        }&page=${currentPage}&limit=${limit}&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
+      )
+      .then(function (response) {
+        setPizzas(response.data);
         setLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortTypeName, searchValue, pagesCount]);
+  }, [categoryId, sortTypeName, searchValue, currentPage]);
 
   const lazyPizzas = [...new Array(4)].map((_, index) => <LazyLoading key={index} />),
     pizzasBlocks = pizzas.map((o) => <PizzaBlock key={o.id} {...o} />);
@@ -42,7 +53,11 @@ function Home() {
         </div>
         <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">{isLoading ? lazyPizzas : pizzasBlocks}</div>
-        <Pagination onPageChange={(number) => setPagesCount(number)} />
+        <Pagination
+          pagesCount={pagesCount}
+          limit={limit}
+          onPageChange={(number) => setCurrentPage(number)}
+        />
       </div>
     </>
   );
