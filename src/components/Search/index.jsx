@@ -1,9 +1,14 @@
-import { useContext } from 'react';
-import { SearchContext } from '../../App';
+import { useSelector, useDispatch } from 'react-redux';
+import { setSearch } from '../../redux/slices/filterSlice';
 import styles from './styles.module.scss';
 
 function Search() {
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  const dispatch = useDispatch();
+  const searchValue = useSelector((state) => state.filter.searchValue);
+  const setSearchValue = (value) => {
+    dispatch(setSearch(value));
+  };
+
   return (
     <div className={styles.root}>
       <svg className={styles.icon} height="48" viewBox="0 0 48 48" width="48">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import Categories from '../components/Categories';
@@ -6,15 +6,13 @@ import SortMenu from '../components/SortMenu';
 import Pagination from '../components/Pagination';
 import PizzaBlock from '../components/PizzaBlocks/PizzaBlock';
 import LazyLoading from '../components/PizzaBlocks/LazyLoading';
-import { SearchContext } from '../App';
 
 function Home() {
-  const { searchValue } = useContext(SearchContext);
   const [pizzas, setPizzas] = useState([]);
   const [pagesCount, setPagesCount] = useState(1);
   const [isLoading, setLoading] = useState(true);
 
-  const { categoryId, sortType } = useSelector((state) => state.filter),
+  const { categoryId, sortType, searchValue } = useSelector((state) => state.filter),
     sortTypeName = sortType.type;
 
   useEffect(() => {
