@@ -1,4 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
+
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
 import Pagination from '../components/Pagination';
@@ -11,18 +13,16 @@ function Home() {
   const [pizzas, setPizzas] = useState([]);
   const [pagesCount, setPagesCount] = useState(1);
   const [isLoading, setLoading] = useState(true);
-  const [categoryId, setCategoryId] = useState(0);
-  const [sortType, setSortType] = useState({
-    name: 'популярности',
-    type: 'rating',
-  });
+
+  const { categoryId, sortType } = useSelector((state) => state.filter),
+    sortTypeName = sortType.type;
 
   useEffect(() => {
     setLoading(true);
     fetch(
       `https://628e3c78368687f3e71316d3.mockapi.io/Pizzas?${
         categoryId ? `category=${categoryId}` : ``
-      }&page=${pagesCount}&limit=4&sortBy=${sortType.type}&order=desc&search=${searchValue}`,
+      }&page=${pagesCount}&limit=4&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
     )
       .then((res) => res.json())
       .then((items) => {
@@ -30,7 +30,7 @@ function Home() {
         setLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchValue, pagesCount]);
+  }, [categoryId, sortTypeName, searchValue, pagesCount]);
 
   const lazyPizzas = [...new Array(4)].map((_, index) => <LazyLoading key={index} />),
     pizzasBlocks = pizzas.map((o) => <PizzaBlock key={o.id} {...o} />);
@@ -39,8 +39,8 @@ function Home() {
     <>
       <div className="container">
         <div className="content__top">
-          <Categories value={categoryId} onChange={setCategoryId} />
-          <SortMenu value={sortType} onChange={setSortType} />
+          <Categories />
+          <SortMenu />
         </div>
         <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">{isLoading ? lazyPizzas : pizzasBlocks}</div>

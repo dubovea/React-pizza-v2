@@ -1,5 +1,9 @@
 import { useState } from 'react';
-function SortMenu({ value, onChange }) {
+import { useSelector, useDispatch } from 'react-redux';
+import { setSortType } from '../redux/slices/filterSlice';
+
+function SortMenu() {
+  const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const categories = [
     {
@@ -16,9 +20,11 @@ function SortMenu({ value, onChange }) {
     },
   ];
 
-  const onChangeSortCategory = (category) => {
+  const sortType = useSelector((state) => state.filter.sortType);
+
+  const onChangeSortCategory = (obj) => {
     setVisible(false);
-    onChange(category);
+    dispatch(setSortType(obj));
   };
 
   return (
@@ -36,7 +42,7 @@ function SortMenu({ value, onChange }) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setVisible(!visible)}>{value.name}</span>
+        <span onClick={() => setVisible(!visible)}>{sortType.name}</span>
       </div>
       {visible && (
         <div className="sort__popup">
@@ -44,7 +50,7 @@ function SortMenu({ value, onChange }) {
             {categories.map((category) => (
               <li
                 key={category.type}
-                className={category.type === value.type ? 'active' : ''}
+                className={category.type === sortType.type ? 'active' : ''}
                 onClick={() => onChangeSortCategory(category)}>
                 {category.name}
               </li>
