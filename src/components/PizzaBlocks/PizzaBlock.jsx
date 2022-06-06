@@ -1,17 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-function PizzaBlock({ imageUrl, title, types, sizes, price, category, rating }) {
-  const [count, setCount] = useState(0);
+function PizzaBlock({ id, image, title, price, category, rating, types, sizes }) {
+  // const axios = require('axios').default;
+  // const [pizzaTypes, setPizzaTypes] = useState([]);
+  // const [pizzaSizes, setPizzaSizes] = useState([]);
+
+  // const getPizzaTypes = () => {
+  //   axios.get(`http://localhost:3001/pizza_types/${id}`).then(function (response) {
+  //     setPizzaTypes(response.data);
+  //   });
+  // };
+
+  // const getPizzaSizes = () => {
+  //   axios.get(`http://localhost:3001/pizza_sizes/${id}`).then(function (response) {
+  //     setPizzaSizes(response.data);
+  //   });
+  // };
+
+
+  // useEffect(() => {
+  //   getPizzaTypes();
+  //   getPizzaSizes();
+  // }, []);
 
   const [sizeIndex, setSizeIndex] = useState(0);
   const [typeIndex, setTypeIndex] = useState(0);
-
-  const pizzasTypes = ['тонкое', 'традиционное'];
-
+  const [count, setCount] = useState(0);
+  
   return (
     <div className="pizza-block__wrapper">
       <div className="pizza-block">
-        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+        <img className="pizza-block__image" src={image} alt="Pizza" />
         <h4 className="pizza-block__title">{title}</h4>
         <div className="pizza-block__selector">
           <ul>
@@ -20,7 +39,7 @@ function PizzaBlock({ imageUrl, title, types, sizes, price, category, rating }) 
                 key={i}
                 className={typeIndex === i ? 'active' : ''}
                 onClick={() => setTypeIndex(i)}>
-                {pizzasTypes[type]}
+                {type}
               </li>
             ))}
           </ul>

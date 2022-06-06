@@ -10,7 +10,7 @@ import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 function Home() {
   const axios = require('axios').default;
   const limit = 4;
-  const sRequestUrl = 'https://628e3c78368687f3e71316d3.mockapi.io/Pizzas?&';
+  const sRequestUrl = 'http://localhost:3001/pizzas';
   const [pizzas, setPizzas] = useState([]);
   const [pagesCount, setPagesCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,26 +20,37 @@ function Home() {
     sortTypeName = sortType.type;
 
   useEffect(() => {
-    axios.get(`${sRequestUrl}`).then(function (response) {
-      const dataPizzas = response.data;
-      setPagesCount(Math.ceil(dataPizzas.length / limit));
-    });
-  }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get(
-        `${sRequestUrl}${
-          categoryId ? `category=${categoryId}` : ``
-        }&page=${currentPage}&limit=${limit}&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
-      )
-      .then(function (response) {
-        setPizzas(response.data);
-        setLoading(false);
-      });
-    window.scrollTo(0, 0);
+    getPizzas();
   }, [categoryId, sortTypeName, searchValue, currentPage]);
+  function getPizzas() {
+    setLoading(true);
+    axios.get(`${sRequestUrl}?orderBy=${sortTypeName}`).then(function (response) {
+      setLoading(false);
+      setPizzas(response.data);
+    });
+  }
+
+  // useEffect(() => {
+  //   axios.get(`${sRequestUrl}`).then(function (response) {
+  //     const dataPizzas = response.data;
+  //     setPagesCount(Math.ceil(dataPizzas.length / limit));
+  //   });
+  // }, []);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   axios
+  //     .get(
+  //       `${sRequestUrl}${
+  //         categoryId ? `category=${categoryId}` : ``
+  //       }&page=${currentPage}&limit=${limit}&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
+  //     )
+  //     .then(function (response) {
+  //       setPizzas(response.data);
+  //       setLoading(false);
+  //     });
+  //   window.scrollTo(0, 0);
+  // }, [categoryId, sortTypeName, searchValue, currentPage]);
 
   const lazyPizzas = [...new Array(4)].map((_, index) => <LazyLoading key={index} />),
     pizzasBlocks = pizzas.map((o) => <PizzaBlock key={o.id} {...o} />);
