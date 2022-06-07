@@ -1,4 +1,7 @@
 const knex = require('knex');
+const { attachPaginate } = require('knex-paginate');
+attachPaginate();
+
 require('dotenv').config();
 const db = knex({
   client: 'pg',
@@ -10,14 +13,33 @@ const db = knex({
   },
 });
 
-const getPizzas = (filterStr) => {
-  console.log(filterStr.orderBy);
+const getPizzas = (oFilter) => {
   return new Promise(function (resolve, reject) {
     db('pizzas')
-      .orderBy(filterStr.orderBy)
-      // .where((builder) => builder.where('rating', 9))
+      .orderBy(oFilter.orderBy)
+      .where((builder) => {
+        if (oFilter.search) {
+          builder.whereILike('title', `%${oFilter.search}%`);
+        }
+        if (oFilter.category) {
+          builder.where('category', oFilter.category);
+        }
+      })
+      .paginate({ perPage: oFilter.perPage, currentPage: oFilter.currentPage })
+      .then((response) => {
+        resolve(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+};
+const getPizzasCount = () => {
+  return new Promise(function (resolve, reject) {
+    db('pizzas')
+      .count('id')
       .then((data) => {
-        resolve(data);
+        resolve(data[0]?.count);
       })
       .catch((err) => {
         console.log(err);
@@ -72,6 +94,7 @@ const getPizzaSizes = (pizza_id) => {
 
 module.exports = {
   getPizzas,
+  getPizzasCount,
   getPizzaTypes,
   getPizzaSizes,
 };

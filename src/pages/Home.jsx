@@ -19,24 +19,36 @@ function Home() {
   const { categoryId, sortType, searchValue } = useSelector((state) => state.filter),
     sortTypeName = sortType.type;
 
+  const getPizzas = () => {
+    setLoading(true);
+    axios
+      .get(
+        `${sRequestUrl}?${
+          categoryId ? `category=${categoryId}` : ``
+        }&orderBy=${sortTypeName}&search=${searchValue}&currentPage=${currentPage}&perPage=${limit}`,
+      )
+      .then(function (response) {
+        setLoading(false);
+        setPizzas(response.data);
+      });
+  };
+
+  const getPizzasCount = () => {
+    axios.get(`${sRequestUrl}/count`).then((response) => {
+      setPagesCount(Math.ceil(response.data / limit));
+    });
+  };
+
+  useEffect(() => {
+    getPizzasCount();
+  }, []);
+
   useEffect(() => {
     getPizzas();
+    window.scrollTo(0, 0);
   }, [categoryId, sortTypeName, searchValue, currentPage]);
-  function getPizzas() {
-    setLoading(true);
-    axios.get(`${sRequestUrl}?orderBy=${sortTypeName}`).then(function (response) {
-      setLoading(false);
-      setPizzas(response.data);
-    });
-  }
 
-  // useEffect(() => {
-  //   axios.get(`${sRequestUrl}`).then(function (response) {
-  //     const dataPizzas = response.data;
-  //     setPagesCount(Math.ceil(dataPizzas.length / limit));
-  //   });
-  // }, []);
-
+  //For mockapi
   // useEffect(() => {
   //   setLoading(true);
   //   axios

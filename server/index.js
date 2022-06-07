@@ -12,9 +12,20 @@ app.use(express.json());
 app.use(cors());
 
 app.get('/pizzas', (req, res) => {
-  const filterStr = req.query;
+  const oFilter = req.query;
   merchant_model
-    .getPizzas(filterStr)
+    .getPizzas(oFilter)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
+app.get('/pizzas/count', (req, res) => {
+  merchant_model
+    .getPizzasCount()
     .then((response) => {
       res.status(200).send(response);
     })
