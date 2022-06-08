@@ -34,6 +34,7 @@ function Home() {
   };
 
   const getPizzasCount = () => {
+    setCurrentPage(1);
     axios
       .get(
         `${sRequestUrl}/count?${
