@@ -5,7 +5,6 @@ const port = 3001;
 
 const merchant_model = require('./merchant_model');
 
-
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 // CORS implemented so that we don't get errors when trying to access the server from a different server location
@@ -24,8 +23,9 @@ app.get('/pizzas', (req, res) => {
 });
 
 app.get('/pizzas/count', (req, res) => {
+  const oFilter = req.query;
   merchant_model
-    .getPizzasCount()
+    .getPizzasCount(oFilter)
     .then((response) => {
       res.status(200).send(response);
     })

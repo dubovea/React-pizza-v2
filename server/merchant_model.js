@@ -34,10 +34,18 @@ const getPizzas = (oFilter) => {
       });
   });
 };
-const getPizzasCount = () => {
+const getPizzasCount = (oFilter) => {
   return new Promise(function (resolve, reject) {
     db('pizzas')
       .count('id')
+      .where((builder) => {
+        if (oFilter.search) {
+          builder.whereILike('title', `%${oFilter.search}%`);
+        }
+        if (oFilter.category) {
+          builder.where('category', oFilter.category);
+        }
+      })
       .then((data) => {
         resolve(data[0]?.count);
       })

@@ -34,14 +34,20 @@ function Home() {
   };
 
   const getPizzasCount = () => {
-    axios.get(`${sRequestUrl}/count`).then((response) => {
-      setPagesCount(Math.ceil(response.data / limit));
-    });
+    axios
+      .get(
+        `${sRequestUrl}/count?${
+          categoryId ? `category=${categoryId}` : ``
+        }&orderBy=${sortTypeName}&search=${searchValue}`,
+      )
+      .then((response) => {
+        setPagesCount(Math.ceil(response.data / limit));
+      });
   };
 
   useEffect(() => {
     getPizzasCount();
-  }, []);
+  }, [categoryId, searchValue]);
 
   useEffect(() => {
     getPizzas();
