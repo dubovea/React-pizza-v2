@@ -1,12 +1,27 @@
+import { useState, useRef, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSearch } from '../../redux/slices/filterSlice';
+import debounce from 'lodash.debounce';
 import styles from './styles.module.scss';
 
 function Search() {
   const dispatch = useDispatch();
   const searchValue = useSelector((state) => state.filter.searchValue);
+  const [value, setValue] = useState(searchValue);
+  const fireSearch = useCallback(
+    debounce((value) => dispatch(setSearch(value)), 300),
+    [],
+  );
+
+  const inputRef = useRef();
   const setSearchValue = (value) => {
-    dispatch(setSearch(value));
+    setValue(value);
+    fireSearch(value);
+  };
+
+  const onClear = () => {
+    setSearchValue('');
+    inputRef.current.focus();
   };
 
   return (
@@ -16,13 +31,14 @@ function Search() {
         <path d="M0 0h48v48H0z" fill="none" />
       </svg>
       <input
+        ref={inputRef}
         className={styles.input}
-        value={searchValue}
+        value={value}
         onChange={(e) => setSearchValue(e.target.value)}
         placeholder="Поиск пиццы..."
       />
       {searchValue && (
-        <svg className={styles.clearIcon} onClick={() => setSearchValue('')} viewBox="0 0 24 24">
+        <svg className={styles.clearIcon} onClick={() => onClear()} viewBox="0 0 24 24">
           <path d="M12,4c-4.419,0-8,3.582-8,8s3.581,8,8,8s8-3.582,8-8S16.419,4,12,4z M15.707,14.293c0.391,0.391,0.391,1.023,0,1.414  C15.512,15.902,15.256,16,15,16s-0.512-0.098-0.707-0.293L12,13.414l-2.293,2.293C9.512,15.902,9.256,16,9,16  s-0.512-0.098-0.707-0.293c-0.391-0.391-0.391-1.023,0-1.414L10.586,12L8.293,9.707c-0.391-0.391-0.391-1.023,0-1.414  s1.023-0.391,1.414,0L12,10.586l2.293-2.293c0.391-0.391,1.023-0.391,1.414,0s0.391,1.023,0,1.414L13.414,12L15.707,14.293z" />
         </svg>
       )}

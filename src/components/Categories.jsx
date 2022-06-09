@@ -1,9 +1,21 @@
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import { setCategory } from '../redux/slices/filterSlice';
 
 function Categories() {
   const dispatch = useDispatch();
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+  const [categories, setCategories] = useState([]);
+
+  const getCategories = () => {
+    axios.get('http://localhost:3001/categories').then((response) => {
+      setCategories(response.data);
+    });
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   const categoryId = useSelector((state) => state.filter.categoryId);
   const onClickCategory = (id) => {
@@ -13,12 +25,12 @@ function Categories() {
   return (
     <div className="categories">
       <ul>
-        {categories.map((category, i) => (
+        {categories.map((category) => (
           <li
-            key={i}
-            onClick={() => onClickCategory(i)}
-            className={i === categoryId ? 'active' : ''}>
-            {category}
+            key={category.id}
+            onClick={() => onClickCategory(category.id)}
+            className={category.id === categoryId ? 'active' : ''}>
+            {category.name}
           </li>
         ))}
       </ul>

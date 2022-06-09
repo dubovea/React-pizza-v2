@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function PizzaBlock({ id, image, title, price, category, rating, types, sizes }) {
-  // const axios = require('axios').default;
   // const [pizzaTypes, setPizzaTypes] = useState([]);
   // const [pizzaSizes, setPizzaSizes] = useState([]);
 
@@ -17,7 +16,6 @@ function PizzaBlock({ id, image, title, price, category, rating, types, sizes })
   //   });
   // };
 
-
   // useEffect(() => {
   //   getPizzaTypes();
   //   getPizzaSizes();
@@ -26,7 +24,7 @@ function PizzaBlock({ id, image, title, price, category, rating, types, sizes })
   const [sizeIndex, setSizeIndex] = useState(0);
   const [typeIndex, setTypeIndex] = useState(0);
   const [count, setCount] = useState(0);
-  
+
   return (
     <div className="pizza-block__wrapper">
       <div className="pizza-block">

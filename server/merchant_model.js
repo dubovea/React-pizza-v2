@@ -100,9 +100,24 @@ const getPizzaSizes = (pizza_id) => {
   });
 };
 
+const getCategories = () => {
+  return new Promise(function (resolve, reject) {
+    db('categories')
+      .orderBy('id')
+      .then((response) => {
+        console.log(response);
+        resolve(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+};
+
 module.exports = {
   getPizzas,
   getPizzasCount,
   getPizzaTypes,
   getPizzaSizes,
+  getCategories,
 };

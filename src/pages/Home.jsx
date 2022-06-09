@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-
+import axios from 'axios';
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
 import Pagination from '../components/Pagination';
@@ -8,15 +8,13 @@ import PizzaBlock from '../components/PizzaBlocks/PizzaBlock';
 import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 
 function Home() {
-  const axios = require('axios').default;
-  const limit = 4;
   const sRequestUrl = 'http://localhost:3001/pizzas';
   const [pizzas, setPizzas] = useState([]);
-  const [pagesCount, setPagesCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setLoading] = useState(true);
 
-  const { categoryId, sortType, searchValue } = useSelector((state) => state.filter),
+  const { categoryId, sortType, searchValue, currentPage, limit } = useSelector(
+      (state) => state.filter,
+    ),
     sortTypeName = sortType.type;
 
   const getPizzas = () => {
@@ -32,23 +30,6 @@ function Home() {
         setPizzas(response.data);
       });
   };
-
-  const getPizzasCount = () => {
-    setCurrentPage(1);
-    axios
-      .get(
-        `${sRequestUrl}/count?${
-          categoryId ? `category=${categoryId}` : ``
-        }&orderBy=${sortTypeName}&search=${searchValue}`,
-      )
-      .then((response) => {
-        setPagesCount(Math.ceil(response.data / limit));
-      });
-  };
-
-  useEffect(() => {
-    getPizzasCount();
-  }, [categoryId, searchValue]);
 
   useEffect(() => {
     getPizzas();
@@ -83,11 +64,7 @@ function Home() {
         </div>
         <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">{isLoading ? lazyPizzas : pizzasBlocks}</div>
-        <Pagination
-          pagesCount={pagesCount}
-          limit={limit}
-          onPageChange={(number) => setCurrentPage(number)}
-        />
+        <Pagination />
       </div>
     </>
   );
