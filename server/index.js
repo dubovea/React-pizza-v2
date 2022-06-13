@@ -10,7 +10,7 @@ app.use(express.json());
 // CORS implemented so that we don't get errors when trying to access the server from a different server location
 app.use(cors());
 
-app.get('/pizzas', (req, res) => {
+app.get('/', (req, res) => {
   const oFilter = req.query;
   merchant_model
     .getPizzas(oFilter)
@@ -22,7 +22,7 @@ app.get('/pizzas', (req, res) => {
     });
 });
 
-app.get('/pizzas/count', (req, res) => {
+app.get('/count', (req, res) => {
   const oFilter = req.query;
   merchant_model
     .getPizzasCount(oFilter)
@@ -59,6 +59,17 @@ app.get('/pizza_sizes/:id', (req, res) => {
 app.get('/categories', (req, res) => {
   merchant_model
     .getCategories()
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
+app.get('/sorters', (req, res) => {
+  merchant_model
+    .getSortCategories()
     .then((response) => {
       res.status(200).send(response);
     })

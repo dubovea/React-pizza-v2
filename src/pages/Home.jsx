@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { setFilterByParams } from '../redux/slices/filterSlice';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import qs from 'qs';
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
 import Pagination from '../components/Pagination';
@@ -8,22 +11,24 @@ import PizzaBlock from '../components/PizzaBlocks/PizzaBlock';
 import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 
 function Home() {
-  const sRequestUrl = 'http://localhost:3001/pizzas';
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isSearch = useRef();
+  const sRequestUrl = 'http://localhost:3001';
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-  const { categoryId, sortType, searchValue, currentPage, limit } = useSelector(
-      (state) => state.filter,
-    ),
-    sortTypeName = sortType.type;
+  const { navigateByParams, category, sortType, searchValue, currentPage, limit } = useSelector(
+    (state) => state.filter,
+  );
 
   const getPizzas = () => {
     setLoading(true);
     axios
       .get(
         `${sRequestUrl}?${
-          categoryId ? `category=${categoryId}` : ``
-        }&orderBy=${sortTypeName}&search=${searchValue}&currentPage=${currentPage}&perPage=${limit}`,
+          category ? `category=${category}` : ``
+        }&orderBy=${sortType}&search=${searchValue}&currentPage=${currentPage}&perPage=${limit}`,
       )
       .then(function (response) {
         setLoading(false);
@@ -31,10 +36,39 @@ function Home() {
       });
   };
 
+  const parseUrlParams = () => {
+    const urlValue = window.location.search;
+    if (urlValue) {
+      const params = qs.parse(urlValue.slice(1));
+      dispatch(setFilterByParams(params));
+      isSearch.current = true;
+    }
+  };
+
+  const setUrlParams = () => {
+    const queryString = qs.stringify({
+      category: category,
+      orderBy: sortType,
+      search: searchValue,
+      currentPage: currentPage,
+      perPage: limit,
+    });
+    navigate(`?${queryString}`);
+  };
+
   useEffect(() => {
-    getPizzas();
+    parseUrlParams();
+  }, []);
+
+  useEffect(() => {
+    setUrlParams();
+    if (!isSearch.current) {
+      getPizzas();
+    }
+
+    isSearch.current = false;
     window.scrollTo(0, 0);
-  }, [categoryId, sortTypeName, searchValue, currentPage]);
+  }, [navigateByParams, category, sortType, searchValue, currentPage]);
 
   //For mockapi
   // useEffect(() => {
@@ -42,7 +76,7 @@ function Home() {
   //   axios
   //     .get(
   //       `${sRequestUrl}${
-  //         categoryId ? `category=${categoryId}` : ``
+  //         category ? `category=${category}` : ``
   //       }&page=${currentPage}&limit=${limit}&sortBy=${sortTypeName}&order=desc&search=${searchValue}`,
   //     )
   //     .then(function (response) {
@@ -50,7 +84,7 @@ function Home() {
   //       setLoading(false);
   //     });
   //   window.scrollTo(0, 0);
-  // }, [categoryId, sortTypeName, searchValue, currentPage]);
+  // }, [category, sortTypeName, searchValue, currentPage]);
 
   const lazyPizzas = [...new Array(4)].map((_, index) => <LazyLoading key={index} />),
     pizzasBlocks = pizzas.map((o) => <PizzaBlock key={o.id} {...o} />);

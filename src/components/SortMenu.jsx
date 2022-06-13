@@ -1,30 +1,29 @@
-import { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import { setSortType } from '../redux/slices/filterSlice';
 
 function SortMenu() {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
-  const categories = [
-    {
-      name: 'популярности',
-      type: 'rating',
-    },
-    {
-      name: 'цене',
-      type: 'price',
-    },
-    {
-      name: 'алфавиту',
-      type: 'title',
-    },
-  ];
+  const [categories, setCategories] = useState([]);
 
-  const sortType = useSelector((state) => state.filter.sortType);
+  const getCategories = () => {
+    axios.get('http://localhost:3001/sorters').then((response) => {
+      setCategories(response.data);
+    });
+  };
+
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const sortType = useSelector((state) => state.filter.sortType),
+    title = categories.find((o) => o.type === sortType)?.name;
 
   const onChangeSortCategory = (obj) => {
     setVisible(false);
-    dispatch(setSortType(obj));
+    dispatch(setSortType(obj.type));
   };
 
   return (
@@ -42,7 +41,7 @@ function SortMenu() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setVisible(!visible)}>{sortType.name}</span>
+        <span onClick={() => setVisible(!visible)}>{title}</span>
       </div>
       {visible && (
         <div className="sort__popup">
@@ -50,7 +49,7 @@ function SortMenu() {
             {categories.map((category) => (
               <li
                 key={category.type}
-                className={category.type === sortType.type ? 'active' : ''}
+                className={category.type === sortType ? 'active' : ''}
                 onClick={() => onChangeSortCategory(category)}>
                 {category.name}
               </li>

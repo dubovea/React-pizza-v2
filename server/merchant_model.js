@@ -105,7 +105,19 @@ const getCategories = () => {
     db('categories')
       .orderBy('id')
       .then((response) => {
-        console.log(response);
+        resolve(response);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+};
+
+const getSortCategories = () => {
+  return new Promise(function (resolve, reject) {
+    db('sort_categories')
+      .orderBy('id')
+      .then((response) => {
         resolve(response);
       })
       .catch((err) => {
@@ -120,4 +132,5 @@ module.exports = {
   getPizzaTypes,
   getPizzaSizes,
   getCategories,
+  getSortCategories
 };

@@ -17,7 +17,7 @@ function Categories() {
     getCategories();
   }, []);
 
-  const categoryId = useSelector((state) => state.filter.categoryId);
+  const category = useSelector((state) => state.filter.category);
   const onClickCategory = (id) => {
     dispatch(setCategory(id));
   };
@@ -25,12 +25,12 @@ function Categories() {
   return (
     <div className="categories">
       <ul>
-        {categories.map((category) => (
+        {categories.map((obj) => (
           <li
-            key={category.id}
-            onClick={() => onClickCategory(category.id)}
-            className={category.id === categoryId ? 'active' : ''}>
-            {category.name}
+            key={obj.id}
+            onClick={() => onClickCategory(obj.id)}
+            className={obj.id === category ? 'active' : ''}>
+            {obj.name}
           </li>
         ))}
       </ul>

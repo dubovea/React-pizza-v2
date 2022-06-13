@@ -8,16 +8,16 @@ import { setCurrentPage, setPagesCount } from '../../redux/slices/filterSlice';
 
 function Pagination() {
   const dispatch = useDispatch();
-  const { sortType, categoryId, searchValue, pagesCount, limit } = useSelector(
+  const { sortType, category, searchValue, pagesCount, limit } = useSelector(
     (state) => state.filter,
   );
 
   const getPizzasCount = () => {
     axios
       .get(
-        `http://localhost:3001/pizzas/count?${categoryId ? `category=${categoryId}` : ``}&orderBy=${
-          sortType.name
-        }&search=${searchValue}`,
+        `http://localhost:3001/count?${
+          category ? `category=${category}` : ``
+        }&orderBy=${sortType}&search=${searchValue}`,
       )
       .then((response) => {
         dispatch(setPagesCount(Math.ceil(response.data / limit)));
@@ -31,7 +31,7 @@ function Pagination() {
   useEffect(() => {
     onPageChange(1);
     getPizzasCount();
-  }, [categoryId, searchValue]);
+  }, [category, searchValue]);
 
   return (
     <ReactPaginate
