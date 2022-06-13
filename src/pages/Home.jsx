@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilterByParams } from '../redux/slices/filterSlice';
+import { setFilterByParams, setPagesCount } from '../redux/slices/filterSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import qs from 'qs';
@@ -13,7 +13,7 @@ import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isSearch = useRef();
+  const isMounted = useRef();
   const sRequestUrl = 'http://localhost:3001';
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setLoading] = useState(true);
@@ -21,6 +21,18 @@ function Home() {
   const { navigateByParams, category, sortType, searchValue, currentPage, limit } = useSelector(
     (state) => state.filter,
   );
+
+  const getPizzasCount = () => {
+    axios
+      .get(
+        `http://localhost:3001/count?${
+          category ? `category=${category}` : ``
+        }&orderBy=${sortType}&search=${searchValue}`,
+      )
+      .then((response) => {
+        dispatch(setPagesCount(Math.ceil(response.data / limit)));
+      });
+  };
 
   const getPizzas = () => {
     setLoading(true);
@@ -41,7 +53,7 @@ function Home() {
     if (urlValue) {
       const params = qs.parse(urlValue.slice(1));
       dispatch(setFilterByParams(params));
-      isSearch.current = true;
+      isMounted.current = true;
     }
   };
 
@@ -62,11 +74,12 @@ function Home() {
 
   useEffect(() => {
     setUrlParams();
-    if (!isSearch.current) {
+    if (!isMounted.current) {
+      getPizzasCount();
       getPizzas();
     }
 
-    isSearch.current = false;
+    isMounted.current = false;
     window.scrollTo(0, 0);
   }, [navigateByParams, category, sortType, searchValue, currentPage]);
 
