@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilterByParams, setPagesCount } from '../redux/slices/filterSlice';
+import { setFilterByParams } from '../redux/slices/filterSlice';
+import { fetchPizzas, fetchPizzasCount } from '../redux/slices/pizzaSlice';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import qs from 'qs';
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
@@ -14,38 +14,33 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isMounted = useRef();
-  const sRequestUrl = 'http://localhost:3001';
-  const [pizzas, setPizzas] = useState([]);
-  const [isLoading, setLoading] = useState(true);
 
-  const { navigateByParams, category, sortType, searchValue, currentPage, limit } = useSelector(
+  const { navigateByParams, category, sortType, searchValue, currentPage } = useSelector(
     (state) => state.filter,
   );
+  const { items, limit, status } = useSelector((state) => state.pizza);
 
+  const categoryStr = category ? `category=${category}` : '',
+    sortTypeStr = sortType ? `orderBy=${sortType}` : '';
   const getPizzasCount = () => {
-    axios
-      .get(
-        `${sRequestUrl}/count?${
-          category ? `category=${category}` : ``
-        }&orderBy=${sortType}&search=${searchValue}`,
-      )
-      .then((response) => {
-        dispatch(setPagesCount(Math.ceil(response.data / limit)));
-      });
+    dispatch(
+      fetchPizzasCount({
+        category: categoryStr,
+        sortType: sortTypeStr,
+        searchValue,
+      }),
+    );
   };
 
   const getPizzas = () => {
-    setLoading(true);
-    axios
-      .get(
-        `${sRequestUrl}?${
-          category ? `category=${category}` : ``
-        }&orderBy=${sortType}&search=${searchValue}&currentPage=${currentPage}&perPage=${limit}`,
-      )
-      .then(function (response) {
-        setLoading(false);
-        setPizzas(response.data);
-      });
+    dispatch(
+      fetchPizzas({
+        category: categoryStr,
+        sortType: sortTypeStr,
+        searchValue,
+        currentPage,
+      }),
+    );
   };
 
   const parseUrlParams = () => {
@@ -100,7 +95,7 @@ function Home() {
   // }, [category, sortTypeName, searchValue, currentPage]);
 
   const lazyPizzas = [...new Array(4)].map((_, index) => <LazyLoading key={index} />),
-    pizzasBlocks = pizzas.map((o) => <PizzaBlock key={o.id} {...o} />);
+    pizzasBlocks = items.map((o) => <PizzaBlock key={o.id} {...o} />);
 
   return (
     <>
@@ -110,7 +105,15 @@ function Home() {
           <SortMenu />
         </div>
         <h2 className="content__title">Все пиццы</h2>
-        <div className="content__items">{isLoading ? lazyPizzas : pizzasBlocks}</div>
+        {status === 'error' ? (
+          <div className="content__error-info">
+            <h2>Произошла ошибка 😕</h2>
+            <p>К сожалению, не удалось получить данные. Повторите попытку позднее...</p>
+          </div>
+        ) : (
+          <div className="content__items">{!status ? lazyPizzas : pizzasBlocks}</div>
+        )}
+
         <Pagination />
       </div>
     </>

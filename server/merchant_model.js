@@ -16,7 +16,7 @@ const db = knex({
 const getPizzas = (oFilter) => {
   return new Promise(function (resolve, reject) {
     db('pizzas')
-      .orderBy(oFilter.orderBy)
+      .orderBy(oFilter.orderBy || 'rating')
       .where((builder) => {
         if (oFilter.search) {
           builder.whereILike('title', `%${oFilter.search}%`);
@@ -132,5 +132,5 @@ module.exports = {
   getPizzaTypes,
   getPizzaSizes,
   getCategories,
-  getSortCategories
+  getSortCategories,
 };

@@ -4,8 +4,6 @@ const initialState = {
   searchValue: '',
   category: 0,
   currentPage: 1,
-  pagesCount: 1,
-  limit: 4,
   sortType: 'rating',
   navigateByParams: false
 };
@@ -26,9 +24,6 @@ export const filterSlice = createSlice({
     setCurrentPage: (state, action) => {
       state.currentPage = action.payload;
     },
-    setPagesCount: (state, action) => {
-      state.pagesCount = action.payload;
-    },
     setLimit: (state, action) => {
       state.limit = action.payload;
     },
@@ -37,7 +32,6 @@ export const filterSlice = createSlice({
       state.sortType = action.payload.orderBy;
       state.searchValue = action.payload.search;
       state.currentPage = +action.payload.currentPage;
-      state.limit = +action.payload.perPage;
       state.navigateByParams = true;
     },
   },
@@ -48,7 +42,6 @@ export const {
   setSortType,
   setSearch,
   setCurrentPage,
-  setPagesCount,
   setLimit,
   setFilterByParams,
 } = filterSlice.actions;
