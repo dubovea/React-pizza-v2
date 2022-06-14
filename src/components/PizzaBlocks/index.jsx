@@ -1,6 +1,7 @@
 import { useState } from 'react';
-
-function PizzaBlock({ id, image, title, price, category, rating, types, sizes }) {
+import { useDispatch } from 'react-redux';
+import { addPizza } from '../../redux/slices/cartSlice';
+function PizzaBlock({ id, image, title, price, types, sizes }) {
   // const [pizzaTypes, setPizzaTypes] = useState([]);
   // const [pizzaSizes, setPizzaSizes] = useState([]);
 
@@ -20,10 +21,31 @@ function PizzaBlock({ id, image, title, price, category, rating, types, sizes })
   //   getPizzaTypes();
   //   getPizzaSizes();
   // }, []);
+  const dispatch = useDispatch();
 
   const [sizeIndex, setSizeIndex] = useState(0);
   const [typeIndex, setTypeIndex] = useState(0);
-  const [count, setCount] = useState(0);
+  let [count, setCount] = useState(0);
+
+  const handleClickAdd = () => {
+    setCount(++count);
+    dispatch(
+      addPizza({
+        id,
+        image,
+        title,
+        price,
+        size: {
+          key: sizeIndex,
+          name: sizes[sizeIndex],
+        },
+        type: {
+          key: typeIndex,
+          name: types[typeIndex],
+        },
+      }),
+    );
+  };
 
   return (
     <div className="pizza-block__wrapper">
@@ -54,7 +76,7 @@ function PizzaBlock({ id, image, title, price, category, rating, types, sizes })
         </div>
         <div className="pizza-block__bottom">
           <div className="pizza-block__price">от {price} ₽</div>
-          <div className="button button--outline button--add" onClick={() => setCount(count + 1)}>
+          <div className="button button--outline button--add" onClick={() => handleClickAdd(id)}>
             <svg
               width="12"
               height="12"
@@ -67,7 +89,7 @@ function PizzaBlock({ id, image, title, price, category, rating, types, sizes })
               />
             </svg>
             <span>Добавить</span>
-            <i>{count}</i>
+            {!!count && <i>{count}</i>}
           </div>
         </div>
       </div>

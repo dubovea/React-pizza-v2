@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { setSortType } from '../redux/slices/filterSlice';
 
 function SortMenu() {
   const dispatch = useDispatch();
+  const sortMenuRef = useRef();
   const [visible, setVisible] = useState(false);
   const [categories, setCategories] = useState([]);
 
@@ -16,6 +17,14 @@ function SortMenu() {
 
   useEffect(() => {
     getCategories();
+
+    const handleClickOutside = (event) => {
+      if (!event.path.includes(sortMenuRef.current)) {
+        setVisible(false);
+      }
+    };
+    document.body.addEventListener('click', handleClickOutside);
+    return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
   const sortType = useSelector((state) => state.filter.sortType),
@@ -27,7 +36,7 @@ function SortMenu() {
   };
 
   return (
-    <div className="sort">
+    <div ref={sortMenuRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"

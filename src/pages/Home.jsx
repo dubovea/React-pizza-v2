@@ -7,7 +7,7 @@ import qs from 'qs';
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
 import Pagination from '../components/Pagination';
-import PizzaBlock from '../components/PizzaBlocks/PizzaBlock';
+import PizzaBlock from '../components/PizzaBlocks';
 import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 
 function Home() {
@@ -25,7 +25,7 @@ function Home() {
   const getPizzasCount = () => {
     axios
       .get(
-        `http://localhost:3001/count?${
+        `${sRequestUrl}/count?${
           category ? `category=${category}` : ``
         }&orderBy=${sortType}&search=${searchValue}`,
       )
