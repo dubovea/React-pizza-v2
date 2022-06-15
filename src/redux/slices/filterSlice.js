@@ -46,4 +46,6 @@ export const {
   setFilterByParams,
 } = filterSlice.actions;
 
+export const filterSelector = (state) => state.filter;
+
 export default filterSlice.reducer;

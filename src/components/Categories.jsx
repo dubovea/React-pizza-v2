@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setCategory } from '../redux/slices/filterSlice';
+import { filterSelector, setCategory } from '../redux/slices/filterSlice';
 
 function Categories() {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ function Categories() {
     getCategories();
   }, []);
 
-  const category = useSelector((state) => state.filter.category);
+  const { category } = useSelector(filterSelector);
   const onClickCategory = (id) => {
     dispatch(setCategory(id));
   };

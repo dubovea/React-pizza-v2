@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initialState = {
+  pizza: {},
   items: [],
   pagesCount: 0,
   limit: 4,
@@ -18,6 +19,12 @@ export const fetchPizzas = createAsyncThunk(
     return data;
   },
 );
+
+export const fetchPizzaById = createAsyncThunk('pizza/fetchPizzaById', async ({ id }) => {
+  const { data } = await axios.get(`${sRequestUrl}/${id}`);
+  return data;
+});
+
 export const fetchPizzasCount = createAsyncThunk(
   'pizza/fetchCount',
   async ({ category, sortType, searchValue }) => {
@@ -34,7 +41,7 @@ export const pizzaSlice = createSlice({
   reducers: {},
   extraReducers: {
     [fetchPizzas.pending]: (state) => {
-      state.status = '';
+      state.status = 'loading';
       state.items = [];
     },
     [fetchPizzas.fulfilled]: (state, action) => {
@@ -51,9 +58,19 @@ export const pizzaSlice = createSlice({
     [fetchPizzasCount.rejected]: (state) => {
       state.pagesCount = 0;
     },
+    [fetchPizzaById.pending]: (state, action) => {
+      state.pizza = {};
+    },
+    [fetchPizzaById.fulfilled]: (state, action) => {
+      state.pizza = action.payload;
+    },
+    [fetchPizzaById.rejected]: (state, action) => {
+      state.pizza = {};
+    },
   },
 });
 
 export const { setItems } = pizzaSlice.actions;
+export const pizzaSelector = (state) => state.pizza;
 
 export default pizzaSlice.reducer;

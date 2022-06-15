@@ -22,6 +22,18 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/:id', (req, res) => {
+  const { id } = req.params;
+  merchant_model
+    .getPizzaById(id)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
 app.get('/count', (req, res) => {
   const oFilter = req.query;
   merchant_model

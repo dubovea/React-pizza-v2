@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFilterByParams } from '../redux/slices/filterSlice';
-import { fetchPizzas, fetchPizzasCount } from '../redux/slices/pizzaSlice';
-import { useNavigate } from 'react-router-dom';
+import { filterSelector, setFilterByParams } from '../redux/slices/filterSlice';
+import { fetchPizzas, fetchPizzasCount, pizzaSelector } from '../redux/slices/pizzaSlice';
+import { useLocation, useNavigate } from 'react-router-dom';
 import qs from 'qs';
 import Categories from '../components/Categories';
 import SortMenu from '../components/SortMenu';
@@ -13,12 +13,12 @@ import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { search } = useLocation();
   const isMounted = useRef();
 
-  const { navigateByParams, category, sortType, searchValue, currentPage } = useSelector(
-    (state) => state.filter,
-  );
-  const { items, limit, status } = useSelector((state) => state.pizza);
+  const { navigateByParams, category, sortType, searchValue, currentPage } =
+    useSelector(filterSelector);
+  const { items, limit, status } = useSelector(pizzaSelector);
 
   const categoryStr = category ? `category=${category}` : '',
     sortTypeStr = sortType ? `orderBy=${sortType}` : '';
@@ -44,9 +44,8 @@ function Home() {
   };
 
   const parseUrlParams = () => {
-    const urlValue = window.location.search;
-    if (urlValue) {
-      const params = qs.parse(urlValue.slice(1));
+    if (search) {
+      const params = qs.parse(search.slice(1));
       dispatch(setFilterByParams(params));
       isMounted.current = true;
     }
@@ -111,7 +110,7 @@ function Home() {
             <p>К сожалению, не удалось получить данные. Повторите попытку позднее...</p>
           </div>
         ) : (
-          <div className="content__items">{!status ? lazyPizzas : pizzasBlocks}</div>
+          <div className="content__items">{status === 'loading' ? lazyPizzas : pizzasBlocks}</div>
         )}
 
         <Pagination />

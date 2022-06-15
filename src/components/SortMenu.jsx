@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { setSortType } from '../redux/slices/filterSlice';
+import { filterSelector, setSortType } from '../redux/slices/filterSlice';
 
 function SortMenu() {
   const dispatch = useDispatch();
@@ -27,7 +27,7 @@ function SortMenu() {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const sortType = useSelector((state) => state.filter.sortType),
+  const { sortType } = useSelector(filterSelector),
     title = categories.find((o) => o.type === sortType)?.name;
 
   const onChangeSortCategory = (obj) => {

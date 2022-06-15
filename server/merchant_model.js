@@ -34,6 +34,19 @@ const getPizzas = (oFilter) => {
       });
   });
 };
+const getPizzaById = (id) => {
+  console.log(id);
+  return new Promise(function (resolve, reject) {
+    db('pizzas')
+      .where('id', id)
+      .then((response) => {
+        resolve(response?.[0]);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
+};
 const getPizzasCount = (oFilter) => {
   return new Promise(function (resolve, reject) {
     db('pizzas')
@@ -128,6 +141,7 @@ const getSortCategories = () => {
 
 module.exports = {
   getPizzas,
+  getPizzaById,
   getPizzasCount,
   getPizzaTypes,
   getPizzaSizes,
