@@ -3,9 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { filterSelector, setCategory } from '../redux/slices/filterSlice';
 
+type CategoryProps = {
+  id: number;
+  name: string;
+};
+
 function Categories() {
   const dispatch = useDispatch();
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<CategoryProps[]>([]);
 
   const getCategories = () => {
     axios.get('http://localhost:3001/categories').then((response) => {
@@ -17,8 +22,8 @@ function Categories() {
     getCategories();
   }, []);
 
-  const { category } = useSelector(filterSelector);
-  const onClickCategory = (id) => {
+  const { category }: { category: number } = useSelector(filterSelector);
+  const onClickCategory = (id: number) => {
     dispatch(setCategory(id));
   };
 

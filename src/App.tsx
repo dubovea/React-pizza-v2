@@ -16,7 +16,7 @@ function App() {
       <div className="content">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/:pizzaId" element={<OnePizza />} />
+          <Route path="/pizza/:pizzaId" element={<OnePizza />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

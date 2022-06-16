@@ -21,7 +21,7 @@ export const fetchPizzas = createAsyncThunk(
 );
 
 export const fetchPizzaById = createAsyncThunk('pizza/fetchPizzaById', async ({ id }) => {
-  const { data } = await axios.get(`${sRequestUrl}/${id}`);
+  const { data } = await axios.get(`${sRequestUrl}/pizza/${id}`);
   return data;
 });
 

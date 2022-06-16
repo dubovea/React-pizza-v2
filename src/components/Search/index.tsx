@@ -9,19 +9,19 @@ function Search() {
   const { searchValue } = useSelector(filterSelector);
   const [value, setValue] = useState(searchValue);
   const fireSearch = useCallback(
-    debounce((value) => dispatch(setSearch(value)), 300),
+    debounce((value: string) => dispatch(setSearch(value)), 300),
     [],
   );
 
-  const inputRef = useRef();
-  const setSearchValue = (value) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const setSearchValue = (value: string) => {
     setValue(value);
     fireSearch(value);
   };
 
   const onClear = () => {
     setSearchValue('');
-    inputRef.current.focus();
+    inputRef.current?.focus();
   };
 
   return (

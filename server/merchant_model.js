@@ -35,7 +35,6 @@ const getPizzas = (oFilter) => {
   });
 };
 const getPizzaById = (id) => {
-  console.log(id);
   return new Promise(function (resolve, reject) {
     db('pizzas')
       .where('id', id)

@@ -22,8 +22,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/:id', (req, res) => {
-  const { id } = req.params;
+app.get('/pizza/:id', (req, res) => {
   merchant_model
     .getPizzaById(id)
     .then((response) => {

@@ -1,13 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { filterSelector, setSortType } from '../redux/slices/filterSlice';
 
+type SortProps = {
+  id: number;
+  name: string;
+  type: string;
+};
+
 function SortMenu() {
   const dispatch = useDispatch();
-  const sortMenuRef = useRef();
+  const sortMenuRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<SortProps[]>([]);
 
   const getCategories = () => {
     axios.get('http://localhost:3001/sorters').then((response) => {
@@ -18,7 +24,7 @@ function SortMenu() {
   useEffect(() => {
     getCategories();
 
-    const handleClickOutside = (event) => {
+    const handleClickOutside = (event: any) => {
       if (!event.path.includes(sortMenuRef.current)) {
         setVisible(false);
       }
@@ -27,10 +33,10 @@ function SortMenu() {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const { sortType } = useSelector(filterSelector),
+  const { sortType }: { sortType: string } = useSelector(filterSelector),
     title = categories.find((o) => o.type === sortType)?.name;
 
-  const onChangeSortCategory = (obj) => {
+  const onChangeSortCategory = (obj: SortProps) => {
     setVisible(false);
     dispatch(setSortType(obj.type));
   };
@@ -57,7 +63,7 @@ function SortMenu() {
           <ul>
             {categories.map((category) => (
               <li
-                key={category.type}
+                key={category.id}
                 className={category.type === sortType ? 'active' : ''}
                 onClick={() => onChangeSortCategory(category)}>
                 {category.name}

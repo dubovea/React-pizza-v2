@@ -7,6 +7,7 @@ function OnePizza() {
   const { pizzaId } = useParams();
   const dispatch = useDispatch();
   const { pizza } = useSelector(pizzaSelector);
+
   useEffect(() => {
     dispatch(
       fetchPizzaById({

@@ -1,6 +1,23 @@
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { decrementPizza, addPizza, removePizza } from '../../redux/slices/cartSlice';
-function PizzaCart({ id, count, image, title, size, type, priceSum }) {
+
+type SizeProps = {
+  key: number;
+  name: string;
+};
+type PizzaProps = {
+  id: number;
+  count: number;
+  image: string;
+  title: string;
+  size: SizeProps;
+  type: SizeProps;
+  priceSum: number;
+};
+
+const PizzaCart: React.FC<PizzaProps> = ({ id, count, image, title, size, type, priceSum }) => {
+
   const dispatch = useDispatch();
   const handleClickDecrement = () => {
     dispatch(
@@ -113,6 +130,6 @@ function PizzaCart({ id, count, image, title, size, type, priceSum }) {
       </div>
     </div>
   );
-}
+};
 
 export default PizzaCart;

@@ -6,12 +6,22 @@ import ReactPaginate from 'react-paginate';
 import { filterSelector, setCurrentPage } from '../../redux/slices/filterSlice';
 import { pizzaSelector } from '../../redux/slices/pizzaSlice';
 
-function Pagination() {
-  const dispatch = useDispatch();
-  const { currentPage, category, searchValue } = useSelector(filterSelector);
-  const { pagesCount, limit } = useSelector(pizzaSelector);
+type PaginationProps = {
+  currentPage: number;
+  category: number;
+  searchValue: string;
+  pagesCount: number;
+  limit: number;
+  page: number;
+};
 
-  const onPageChange = (page) => {
+const Pagination: React.FC = () => {
+  const dispatch = useDispatch();
+  const { currentPage, category, searchValue }: PaginationProps = useSelector(filterSelector);
+  const { pagesCount, limit }: PaginationProps = useSelector(pizzaSelector);
+  const nothing: any = null;
+
+  const onPageChange = (page: number) => {
     dispatch(setCurrentPage(page));
   };
 
@@ -29,9 +39,9 @@ function Pagination() {
       pageRangeDisplayed={limit}
       pageCount={pagesCount}
       previousLabel="<"
-      renderOnZeroPageCount={null}
+      renderOnZeroPageCount={nothing}
     />
   );
-}
+};
 
 export default Pagination;
