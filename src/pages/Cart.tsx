@@ -4,9 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import PizzaCart from '../components/PizzaCart';
 import { clearPizzas, cartSelector } from '../redux/slices/cartSlice';
 import CartEmpty from './CartEmpty';
+import { useAppDispath } from '../redux/store';
 
 const Cart: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispath();
   const { totalPrice, items } = useSelector(cartSelector);
   const handleClearAll = () => {
     dispatch(clearPizzas());

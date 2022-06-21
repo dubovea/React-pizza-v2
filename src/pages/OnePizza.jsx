@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispath } from '../redux/store';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchPizzaById, pizzaSelector } from '../redux/slices/pizzaSlice';
 
 function OnePizza() {
   const { pizzaId } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispath();
   const { pizza } = useSelector(pizzaSelector);
 
   useEffect(() => {

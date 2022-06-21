@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { filterSelector, setCategory } from '../redux/slices/filterSlice';
+import { useAppDispath } from '../redux/store';
 
 type CategoryProps = {
   id: number;
   name: string;
 };
 
-function Categories() {
-  const dispatch = useDispatch();
+const Categories: React.FC = () => {
+  const dispatch = useAppDispath();
   const [categories, setCategories] = useState<CategoryProps[]>([]);
 
   const getCategories = () => {
@@ -41,6 +42,6 @@ function Categories() {
       </ul>
     </div>
   );
-}
+};
 
 export default Categories;

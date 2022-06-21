@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef, MutableRefObject } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { filterSelector, setSortType } from '../redux/slices/filterSlice';
+import { useAppDispath } from '../redux/store';
 
 type SortProps = {
   id: number;
@@ -9,8 +10,8 @@ type SortProps = {
   type: string;
 };
 
-function SortMenu() {
-  const dispatch = useDispatch();
+const SortMenu: React.FC = () => {
+  const dispatch = useAppDispath();
   const sortMenuRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [categories, setCategories] = useState<SortProps[]>([]);
@@ -23,9 +24,8 @@ function SortMenu() {
 
   useEffect(() => {
     getCategories();
-
-    const handleClickOutside = (event: any) => {
-      if (!event.path.includes(sortMenuRef.current)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortMenuRef.current && !event.composedPath().includes(sortMenuRef.current)) {
         setVisible(false);
       }
     };
@@ -33,8 +33,8 @@ function SortMenu() {
     return () => document.body.removeEventListener('click', handleClickOutside);
   }, []);
 
-  const { sortType }: { sortType: string } = useSelector(filterSelector),
-    title = categories.find((o) => o.type === sortType)?.name;
+  const { orderBy }: { orderBy: string } = useSelector(filterSelector),
+    title = categories.find((o) => o.type === orderBy)?.name;
 
   const onChangeSortCategory = (obj: SortProps) => {
     setVisible(false);
@@ -64,7 +64,7 @@ function SortMenu() {
             {categories.map((category) => (
               <li
                 key={category.id}
-                className={category.type === sortType ? 'active' : ''}
+                className={category.type === orderBy ? 'active' : ''}
                 onClick={() => onChangeSortCategory(category)}>
                 {category.name}
               </li>
@@ -74,6 +74,6 @@ function SortMenu() {
       )}
     </div>
   );
-}
+};
 
 export default SortMenu;

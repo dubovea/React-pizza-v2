@@ -1,24 +1,15 @@
-import React from 'react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styles from './styles.module.scss';
 import ReactPaginate from 'react-paginate';
 import { filterSelector, setCurrentPage } from '../../redux/slices/filterSlice';
 import { pizzaSelector } from '../../redux/slices/pizzaSlice';
-
-type PaginationProps = {
-  currentPage: number;
-  category: number;
-  searchValue: string;
-  pagesCount: number;
-  limit: number;
-  page: number;
-};
+import { useAppDispath } from '../../redux/store';
 
 const Pagination: React.FC = () => {
-  const dispatch = useDispatch();
-  const { currentPage, category, searchValue }: PaginationProps = useSelector(filterSelector);
-  const { pagesCount, limit }: PaginationProps = useSelector(pizzaSelector);
+  const dispatch = useAppDispath();
+  const { currentPage, category, search } = useSelector(filterSelector);
+  const { pagesCount, limit } = useSelector(pizzaSelector);
   const nothing: any = null;
 
   const onPageChange = (page: number) => {
@@ -27,7 +18,7 @@ const Pagination: React.FC = () => {
 
   useEffect(() => {
     onPageChange(1);
-  }, [category, searchValue]);
+  }, [category, search]);
 
   return (
     <ReactPaginate

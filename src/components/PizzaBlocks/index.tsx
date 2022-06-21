@@ -1,40 +1,12 @@
-import React from 'react';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { addPizza } from '../../redux/slices/cartSlice';
+import { PizzaItem } from '../../redux/slices/pizzaSlice';
+import { PizzaCartItem } from '../../redux/slices/cartSlice';
+import { useAppDispath } from '../../redux/store';
 
-type PizzaProps = {
-  id: number;
-  count: number;
-  image: string;
-  title: string;
-  sizes: string[];
-  types: string[];
-  price: number;
-};
-
-const PizzaBlock: React.FC<PizzaProps> = ({ id, image, title, price, types, sizes }) => {
-  // const [pizzaTypes, setPizzaTypes] = useState([]);
-  // const [pizzaSizes, setPizzaSizes] = useState([]);
-
-  // const getPizzaTypes = () => {
-  //   axios.get(`http://localhost:3001/pizza_types/${id}`).then(function (response) {
-  //     setPizzaTypes(response.data);
-  //   });
-  // };
-
-  // const getPizzaSizes = () => {
-  //   axios.get(`http://localhost:3001/pizza_sizes/${id}`).then(function (response) {
-  //     setPizzaSizes(response.data);
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   getPizzaTypes();
-  //   getPizzaSizes();
-  // }, []);
-  const dispatch = useDispatch();
+const PizzaBlock: React.FC<PizzaItem> = ({ id, image, title, price, types, sizes }) => {
+  const dispatch = useAppDispath();
 
   const [sizeIndex, setSizeIndex] = useState(0);
   const [typeIndex, setTypeIndex] = useState(0);
@@ -42,22 +14,23 @@ const PizzaBlock: React.FC<PizzaProps> = ({ id, image, title, price, types, size
 
   const handleClickAdd = () => {
     setCount(++count);
-    dispatch(
-      addPizza({
-        id,
-        image,
-        title,
-        price,
-        size: {
-          key: sizeIndex,
-          name: sizes[sizeIndex],
-        },
-        type: {
-          key: typeIndex,
-          name: types[typeIndex],
-        },
-      }),
-    );
+    const item: PizzaCartItem = {
+      id,
+      image,
+      title,
+      price,
+      size: {
+        key: sizeIndex,
+        name: sizes[sizeIndex].toString(),
+      },
+      type: {
+        key: typeIndex,
+        name: types[typeIndex].toString(),
+      },
+      count: 0,
+      priceSum: 0,
+    };
+    dispatch(addPizza(item));
   };
 
   return (

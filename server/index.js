@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
 app.get('/pizza/:id', (req, res) => {
   merchant_model
-    .getPizzaById(id)
+    .getPizzaById(req.params.id)
     .then((response) => {
       res.status(200).send(response);
     })
