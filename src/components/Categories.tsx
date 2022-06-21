@@ -3,16 +3,16 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { filterSelector, setCategory } from '../redux/slices/filterSlice';
 import { useAppDispath } from '../redux/store';
+import { useWhyDidYouUpdate } from 'ahooks';
 
 type CategoryProps = {
   id: number;
   name: string;
 };
 
-const Categories: React.FC = () => {
+const Categories: React.FC = React.memo(() => {
   const dispatch = useAppDispath();
   const [categories, setCategories] = useState<CategoryProps[]>([]);
-
   const getCategories = () => {
     axios.get('http://localhost:3001/categories').then((response) => {
       setCategories(response.data);
@@ -42,6 +42,6 @@ const Categories: React.FC = () => {
       </ul>
     </div>
   );
-};
+});
 
 export default Categories;

@@ -26,6 +26,8 @@ const Home: React.FC = () => {
   const { navigateByParams, category, orderBy, search, currentPage } = useSelector(filterSelector);
   const { items, limit, status }: PizzaSliceState = useSelector(pizzaSelector);
 
+
+
   const categoryStr = category ? `category=${category}` : '',
     sortTypeStr = orderBy ? `orderBy=${orderBy}` : '';
   const getPizzasCount = () => {

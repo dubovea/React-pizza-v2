@@ -10,7 +10,7 @@ type SortProps = {
   type: string;
 };
 
-const SortMenu: React.FC = () => {
+const SortMenu: React.FC = React.memo(() => {
   const dispatch = useAppDispath();
   const sortMenuRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -74,6 +74,6 @@ const SortMenu: React.FC = () => {
       )}
     </div>
   );
-};
+});
 
 export default SortMenu;
