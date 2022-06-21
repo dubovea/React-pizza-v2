@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import PizzaCart from '../components/PizzaCart';
-import { clearPizzas, cartSelector } from '../redux/slices/cartSlice';
+import { clearPizzas } from '../redux/cart/slice';
+import { cartSelector } from '../redux/cart/selectors';
 import CartEmpty from './CartEmpty';
 import { useAppDispath } from '../redux/store';
 

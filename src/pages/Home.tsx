@@ -1,13 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { filterSelector, setFilterByParams, FilterSliceState } from '../redux/slices/filterSlice';
-import {
-  fetchPizzas,
-  fetchPizzasCount,
-  pizzaSelector,
-  FetchPizzaArgs,
-  PizzaSliceState,
-} from '../redux/slices/pizzaSlice';
+import { filterSelector } from '../redux/filter/selectors';
+import { setFilterByParams } from '../redux/filter/slice';
+import { FilterSliceState } from '../redux/filter/types';
+import { pizzaSelector } from '../redux/pizza/selectors';
+import { fetchPizzas, fetchPizzasCount } from '../redux/pizza/actions';
+import { FetchPizzaArgs, PizzaSliceState } from '../redux/pizza/types';
 import { useLocation, useNavigate } from 'react-router-dom';
 import qs from 'qs';
 import Categories from '../components/Categories';
@@ -25,8 +23,6 @@ const Home: React.FC = () => {
 
   const { navigateByParams, category, orderBy, search, currentPage } = useSelector(filterSelector);
   const { items, limit, status }: PizzaSliceState = useSelector(pizzaSelector);
-
-
 
   const categoryStr = category ? `category=${category}` : '',
     sortTypeStr = orderBy ? `orderBy=${orderBy}` : '';

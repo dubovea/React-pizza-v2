@@ -1,31 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-
-type SizeProps = {
-  key: number;
-  name: string;
-};
-
-export type PizzaCartItem = {
-  id: number;
-  concatedKey?: string;
-  count: number;
-  image: string;
-  title: string;
-  size: SizeProps;
-  type: SizeProps;
-  price: number;
-  priceSum: number;
-};
-
-interface CartSliceState {
-  totalPrice: number;
-  items: PizzaCartItem[];
-}
+import { getLocalStorageItems, getLocalStorageTotalPrice } from '../../utils/localStorageAPI';
+import { CartSliceState, PizzaCartItem } from './types';
 
 const initialState: CartSliceState = {
-  items: [],
-  totalPrice: 0,
+  items: getLocalStorageItems(),
+  totalPrice: getLocalStorageTotalPrice(),
 };
 
 const getKey = (obj: PizzaCartItem) => `${obj.id}${obj.size.key}${obj.type.key}`;
@@ -86,8 +65,6 @@ export const cartSlice = createSlice({
     },
   },
 });
-
-export const cartSelector = (state: RootState) => state.cart;
 
 export const { addPizza, removePizza, decrementPizza, clearPizzas } = cartSlice.actions;
 

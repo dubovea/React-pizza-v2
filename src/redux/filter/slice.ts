@@ -1,13 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../store';
-
-export type FilterSliceState = {
-  search: string;
-  category: number;
-  currentPage: number;
-  orderBy: string;
-  navigateByParams: boolean;
-};
+import { FilterSliceState } from './types';
 
 const initialState: FilterSliceState = {
   search: '',
@@ -45,7 +37,5 @@ export const filterSlice = createSlice({
 
 export const { setCategory, setSortType, setSearch, setCurrentPage, setFilterByParams } =
   filterSlice.actions;
-
-export const filterSelector = (state: RootState) => state.filter;
 
 export default filterSlice.reducer;

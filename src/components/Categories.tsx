@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
-import { filterSelector, setCategory } from '../redux/slices/filterSlice';
+import { filterSelector } from '../redux/filter/selectors';
+import { setCategory } from '../redux/filter/slice';
 import { useAppDispath } from '../redux/store';
-import { useWhyDidYouUpdate } from 'ahooks';
 
 type CategoryProps = {
   id: number;

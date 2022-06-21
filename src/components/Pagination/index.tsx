@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styles from './styles.module.scss';
 import ReactPaginate from 'react-paginate';
-import { filterSelector, setCurrentPage } from '../../redux/slices/filterSlice';
-import { pizzaSelector } from '../../redux/slices/pizzaSlice';
+import { filterSelector } from '../../redux/filter/selectors';
+import { setCurrentPage } from '../../redux/filter/slice';
+import { pizzaSelector } from '../../redux/pizza/selectors';
 import { useAppDispath } from '../../redux/store';
 
 const Pagination: React.FC = () => {

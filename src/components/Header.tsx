@@ -2,10 +2,10 @@ import logo from '../assets/img/pizza-logo.svg';
 import Search from './Search';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { cartSelector } from '../redux/slices/cartSlice';
+import { cartSelector } from '../redux/cart/selectors';
 import React from 'react';
 
-const  Header: React.FC = () => {
+const Header: React.FC = () => {
   const { pathname } = useLocation();
   const cartPath = '/cart';
   const { totalPrice, items } = useSelector(cartSelector);
@@ -60,6 +60,6 @@ const  Header: React.FC = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Header;

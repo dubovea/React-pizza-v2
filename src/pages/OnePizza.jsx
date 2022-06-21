@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { useAppDispath } from '../redux/store';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchPizzaById, pizzaSelector } from '../redux/slices/pizzaSlice';
+import { fetchPizzaById } from '../redux/pizza/actions';
+import { pizzaSelector } from '../redux/pizza/selectors';
 
 function OnePizza() {
   const { pizzaId } = useParams();

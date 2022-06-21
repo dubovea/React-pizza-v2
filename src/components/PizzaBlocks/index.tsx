@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { addPizza } from '../../redux/slices/cartSlice';
-import { PizzaItem } from '../../redux/slices/pizzaSlice';
-import { PizzaCartItem } from '../../redux/slices/cartSlice';
+import { addPizza } from '../../redux/cart/slice';
+import { PizzaItem } from '../../redux/pizza/types';
+import { PizzaCartItem } from '../../redux/cart/types';
 import { useAppDispath } from '../../redux/store';
 
 const PizzaBlock: React.FC<PizzaItem> = ({ id, image, title, price, types, sizes }) => {
