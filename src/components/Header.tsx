@@ -1,14 +1,123 @@
 import logo from '../assets/img/pizza-logo.svg';
 import Search from './Search';
+import {
+  Button,
+  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  IconButton,
+  FormHelperText,
+} from '@mui/material';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import React, { ChangeEvent } from 'react';
 import { useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { cartSelector } from '../redux/cart/selectors';
-import React from 'react';
+import {
+  setEmail,
+  setLogin,
+  setPassword,
+  setRepassword,
+  clearData,
+} from '../redux/registration/slice';
+import { useAppDispath } from '../redux/store';
+import { registrationSelector } from '../redux/registration/selectors';
+import { setOpen, setRegistered } from '../redux/registration/slice';
+import { registration } from '../redux/registration/actions';
 
 const Header: React.FC = () => {
+  const dispatch = useAppDispath();
   const { pathname } = useLocation();
   const cartPath = '/cart';
   const { totalPrice, items } = useSelector(cartSelector);
+  const { login, email, password, repassword, registered, open } =
+    useSelector(registrationSelector);
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickOpen = () => {
+    dispatch(setOpen(true));
+  };
+  const handleExit = () => {
+    dispatch(setRegistered(false));
+  };
+
+  const handleClose = () => {
+    dispatch(setOpen(false));
+    dispatch(clearData());
+  };
+  const handleRegistration = (e: any) => {
+    dispatch(
+      registration({
+        login: {
+          value: login.value,
+        },
+        password: {
+          value: password.value,
+        },
+        repassword: {
+          value: repassword.value,
+        },
+        email: {
+          value: email.value,
+        },
+        open: true,
+      }),
+    );
+  };
+
+  const handleChangeField = (input: ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = input.target;
+    switch (id) {
+      case 'login':
+        dispatch(
+          setLogin({
+            value: value,
+          }),
+        );
+        break;
+      case 'password':
+        dispatch(
+          setPassword({
+            value: value,
+          }),
+        );
+        break;
+      case 'email':
+        dispatch(
+          setEmail({
+            value: value,
+          }),
+        );
+        break;
+      case 'repassword':
+        dispatch(
+          setRepassword({
+            value: value,
+          }),
+        );
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
+
   return (
     <div className="header">
       <div className="container">
@@ -57,6 +166,94 @@ const Header: React.FC = () => {
             <span>{items.length}</span>
           </Link>
         </div>
+        {registered ? (
+          <div className="header__exit">
+            {login.value}{' '}
+            <Button variant="outlined" onClick={handleExit}>
+              Выйти
+            </Button>
+          </div>
+        ) : (
+          <Button variant="outlined" onClick={handleClickOpen}>
+            Войти
+          </Button>
+        )}
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Регистрация</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Пожалуйста, введите данные для создания учетной записи на нашем сайте.
+            </DialogContentText>
+            <TextField
+              error={!!login.message}
+              helperText={login.message}
+              autoFocus
+              margin="dense"
+              id="login"
+              label="Логин"
+              fullWidth
+              variant="outlined"
+              onChange={handleChangeField}
+            />
+            <TextField
+              error={!!email.message}
+              helperText={email.message}
+              margin="dense"
+              id="email"
+              label="Email"
+              type="email"
+              fullWidth
+              variant="outlined"
+              onChange={handleChangeField}
+            />
+            <FormControl variant="outlined" margin="dense" fullWidth>
+              <InputLabel htmlFor="password">Пароль</InputLabel>
+              <OutlinedInput
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleChangeField}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end">
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+            <FormControl variant="outlined" margin="dense" fullWidth>
+              <InputLabel htmlFor="repassword">Повторите пароль</InputLabel>
+              <OutlinedInput
+                error={password.value !== repassword.value}
+                id="repassword"
+                type={showPassword ? 'text' : 'password'}
+                onChange={handleChangeField}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end">
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+              {password.value !== repassword.value && (
+                <FormHelperText error>Введите одинаковые пароли.</FormHelperText>
+              )}
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Отмена</Button>
+            <Button onClick={handleRegistration}>Регистрация</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </div>
   );

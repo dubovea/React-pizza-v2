@@ -41,7 +41,7 @@ export const pizzaSlice = createSlice({
     builder.addCase(fetchPizzaById.fulfilled, (state, action) => {
       state.pizza = action.payload;
     });
-    builder.addCase(fetchPizzaById.rejected, (state) => {
+    builder.addCase(fetchPizzaById.rejected, (state, action) => {
       state.pizza = emptyPizza;
     });
   },

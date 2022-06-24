@@ -89,6 +89,17 @@ app.get('/sorters', (req, res) => {
     });
 });
 
+app.post('/registration', (req, res) => {
+  merchant_model
+    .registration(req.body)
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
 });

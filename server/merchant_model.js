@@ -138,6 +138,36 @@ const getSortCategories = () => {
   });
 };
 
+const registration = ({ login, email, password }) => {
+  return new Promise(function (resolve, reject) {
+    db.insert([
+      {
+        login,
+        email,
+        password,
+      },
+    ])
+      .into('users')
+      .then((response) => {
+        resolve(response);
+      })
+      .catch((err) => {
+        if (err.constraint === 'login') {
+          reject({
+            message: 'Пользователь с таким логином уже существует.',
+            constraint: err.constraint,
+          });
+        }
+        if (err.constraint === 'email') {
+          reject({
+            message: 'Пользователь с такой почтой уже существует.',
+            constraint: err.constraint,
+          });
+        }
+      });
+  });
+};
+
 module.exports = {
   getPizzas,
   getPizzaById,
@@ -146,4 +176,5 @@ module.exports = {
   getPizzaSizes,
   getCategories,
   getSortCategories,
+  registration,
 };
