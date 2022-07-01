@@ -16,6 +16,7 @@ import LazyLoading from '../components/PizzaBlocks/LazyLoading';
 import { useAppDispath } from '../redux/store';
 
 const Home: React.FC = () => {
+  import('../utils/math').then((math) => math.add(5, 5));
   const dispatch = useAppDispath();
   const navigate = useNavigate();
   const searchLocation = useLocation().search;
